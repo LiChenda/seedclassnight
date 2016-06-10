@@ -25,23 +25,15 @@ void encrypt(char *filename, char* message)
   int i, j;
   for (i = 0; i < 8; ++i) {
     u_8 testbyte =((u_8)3) & (len >> (14 - 2*i));
-    /*printf("%u\n", testbyte);*/
-    /*imageData.pixelHead[i].Red =*/
-      /*(imageData.pixelHead[i].Red & ((u_8)254))*/
-      /*+ testbyte;*/
     byteHead[i] =
-      (byteHead[i] & ((u_8)252))
-      + testbyte;
-    /*printf("%u\n", imageData.pixelHead[i].Red);*/
+      (byteHead[i] & ((u_8)252)) + testbyte;
   }
-  printf("\n");
+
   for (j = 0; j < len; ++j) {
     for ( i = 0; i < 8; ++i) {
       u_8 testbyte =((u_8)1) & (message[j] >> (7-i));
       byteHead[8 + j * 8 + i] =
-        (byteHead[8 + j * 8 + i] & ((u_8)254))
-        + testbyte;
-      /*printf("%u\n", imageData.pixelHead[8 + j * 8 + i].Red);*/
+        (byteHead[8 + j * 8 + i] & ((u_8)254)) + testbyte;
     }
   }
 

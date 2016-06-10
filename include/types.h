@@ -33,26 +33,24 @@ typedef struct _Pixel {
 } Pixel;
 
 typedef struct _FileHeader {
-  /* data */
-  u_16 identdy;
-  u_32 fileSize;
-  u_32 reserved;
-  u_32 dataOffset;
+  u_16 identdy; //文件标志
+  u_32 fileSize;//文件大小
+  u_32 reserved;//保留字
+  u_32 dataOffset;//阵列区偏移量
 } FileHeader;
 
 typedef struct _InfoHeader {
-  /* data */
-  u_32 infoHeaderSize;
-  u_32 imageWidth;
-  u_32 imageHight;
-  u_16 plane;
-  u_16 colorByte;
-  u_32 compressType;
-  u_32 dataSize;
-  u_32 pixelPerMeterH;
-  u_32 pixelPerMeterV;
-  u_32 colorNum;
-  u_32 importantColorNum;
+  u_32 infoHeaderSize;  //信息头大小
+  u_32 imageWidth;      //图片宽度
+  u_32 imageHight;      //图片高度
+  u_16 plane;           //位面数
+  u_16 colorByte;       //像素点位数 24位位图为18H
+  u_32 compressType;    //压缩信息
+  u_32 dataSize;        //阵列区的大小
+  u_32 pixelPerMeterH;  //水平分辨率
+  u_32 pixelPerMeterV;  //垂直分辨率
+  u_32 colorNum;        //颜色数
+  u_32 importantColorNum;//重要颜色数
 } InfoHeader;
 
 typedef struct _imagData {

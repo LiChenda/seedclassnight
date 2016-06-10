@@ -29,13 +29,9 @@ void decode(char *filename)
   for (j = 0; j < length; j++) {
     tmpc = 0;
     for (i = 0; i < 8; ++i) {
-
-      /*tmp = img.pixelHead[8 + j * 8 + i].Red;*/
       tmp = byteHead[8 + j * 8 + i];
-      /*printf("%u\n", tmp);*/
       tmpc = tmpc << 1;
       tmpc += tmp & 1;
-
     }
     /*printf(" \n");*/
     message[j] = tmpc;
