@@ -8,7 +8,7 @@
 #include "../include/decode.h"
 
 
-char message[500];
+char message[MAXLEN];
 
 void decode(char *filename)
 {
@@ -16,26 +16,40 @@ void decode(char *filename)
   u_8 tmp;
   char  tmpc;
   ImageData img = readBitMap(filename);
+
+  u_8 *byteHead = (u_8*)img.pixelHead;
+
   int i, j;
   for (i = 0; i < 8; ++i) {
-    tmp = img.pixelHead[i].Red;
-    length = length << 1;
-    length += tmp & 1;
+    tmp = byteHead[i];
+    length = length << 2;
+    length += tmp & 3;
   }
-  /*printf("length: %d\n", length);*/
+  printf("length: %d\n", length);
   for (j = 0; j < length; j++) {
     tmpc = 0;
     for (i = 0; i < 8; ++i) {
-      tmp = img.pixelHead[8 + j * 8 + i].Red;
+
+      /*tmp = img.pixelHead[8 + j * 8 + i].Red;*/
+      tmp = byteHead[8 + j * 8 + i];
       /*printf("%u\n", tmp);*/
       tmpc = tmpc << 1;
       tmpc += tmp & 1;
+
     }
     /*printf(" \n");*/
     message[j] = tmpc;
   }
   message[length] = '\0';
 
+  /*for (i = 120; i < 400; ++i) {*/
+
+    /*if(img.pixelHead[i].Red != 237 )*/
+    /*{*/
+      /*printf("%d\n",i );*/
+    /*}*/
+
+  /*}*/
 
   free(img.pixelHead);
 }

@@ -22,6 +22,7 @@ typedef signed long s_64;
 
 #define False (0)
 #define True (1)
+#define MAXLEN 5000
 
 
 typedef struct _Pixel {

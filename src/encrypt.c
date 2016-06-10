@@ -15,17 +15,22 @@
 #include "../include/encrypt.h"
 #include "../include/ReadBmp.h"
 
+
 void encrypt(char *filename, char* message)
 {
-  u_8 len = (u_8)strlen(message);
+  u_16 len = (u_16)strlen(message);
   /*printf("input len %u\n", len);*/
   ImageData imageData = readBitMap(filename);
+  u_8 *byteHead = (u_8*)imageData.pixelHead;
   int i, j;
   for (i = 0; i < 8; ++i) {
-    u_8 testbyte =((u_8)1) & (len >> (7-i));
+    u_8 testbyte =((u_8)3) & (len >> (14 - 2*i));
     /*printf("%u\n", testbyte);*/
-    imageData.pixelHead[i].Red =
-      (imageData.pixelHead[i].Red & ((u_8)254))
+    /*imageData.pixelHead[i].Red =*/
+      /*(imageData.pixelHead[i].Red & ((u_8)254))*/
+      /*+ testbyte;*/
+    byteHead[i] =
+      (byteHead[i] & ((u_8)252))
       + testbyte;
     /*printf("%u\n", imageData.pixelHead[i].Red);*/
   }
@@ -33,8 +38,8 @@ void encrypt(char *filename, char* message)
   for (j = 0; j < len; ++j) {
     for ( i = 0; i < 8; ++i) {
       u_8 testbyte =((u_8)1) & (message[j] >> (7-i));
-      imageData.pixelHead[8 + j * 8 + i].Red =
-        (imageData.pixelHead[8 + j * 8 + i].Red & ((u_8)254))
+      byteHead[8 + j * 8 + i] =
+        (byteHead[8 + j * 8 + i] & ((u_8)254))
         + testbyte;
       /*printf("%u\n", imageData.pixelHead[8 + j * 8 + i].Red);*/
     }
@@ -59,8 +64,17 @@ void encrypt(char *filename, char* message)
 
 int main(int argc, char *argv[])
 {
-  char message[500]; 
-  scanf("%s", message);
+  char message[MAXLEN]; 
+  int i = 0;
+  while (1) {
+    message[i] = getchar();
+    if (message[i] == EOF) {
+      message[i] = '\0';
+      break; 
+    }
+    i++;
+  }
+    
   encrypt(argv[1], message);
   return 0;
 }
