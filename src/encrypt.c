@@ -1,6 +1,6 @@
 /*=============================================================================
 #     FileName: encrypt.c
-#         Desc: 
+#         Desc: encrypt message into bit map file 
 #       Author: LiChenda
 #        Email: lichenda1996@gmail.com
 #     HomePage: https://github.com/LiChenda
@@ -18,22 +18,29 @@
 
 void encrypt(char *filename, char* message)
 {
+  /*get message length*/
   u_16 len = (u_16)strlen(message);
-  /*printf("input len %u\n", len);*/
+
+  /*read bit map*/
   ImageData imageData = readBitMap(filename);
   u_8 *byteHead = (u_8*)imageData.pixelHead;
+
   int i, j;
+  /*encrypt message length*/
   for (i = 0; i < 8; ++i) {
-    u_8 testbyte =((u_8)3) & (len >> (14 - 2*i));
+    u_8 testbyte =((u_8)3) & (len >> (14 - 2*i)); //bits to put
     byteHead[i] =
-      (byteHead[i] & ((u_8)252)) + testbyte;
+      (byteHead[i] & ((u_8)252)) //set last 2 bits 0
+      + testbyte;
   }
 
+  /*encrypt message into pixels*/
   for (j = 0; j < len; ++j) {
     for ( i = 0; i < 8; ++i) {
-      u_8 testbyte =((u_8)1) & (message[j] >> (7-i));
+      u_8 testbyte =((u_8)1) & (message[j] >> (7 - i)); //bit to put
       byteHead[8 + j * 8 + i] =
-        (byteHead[8 + j * 8 + i] & ((u_8)254)) + testbyte;
+        (byteHead[8 + j * 8 + i] & ((u_8)254)) //set last bit 0
+        + testbyte;
     }
   }
 
@@ -66,7 +73,7 @@ int main(int argc, char *argv[])
     }
     i++;
   }
-    
+
   encrypt(argv[1], message);
   return 0;
 }

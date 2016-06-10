@@ -1,6 +1,6 @@
 /*=============================================================================
 #     FileName: ReadBmp.c
-#         Desc: 
+#         Desc: read bit map file
 #       Author: LiChenda
 #        Email: lichenda1996@gmail.com
 #     HomePage: https://github.com/LiChenda
@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include "../include/ReadBmp.h"
 
-
-
 ImageData readBitMap(char *filename)
 {
   FILE *filePtr;
@@ -22,6 +20,8 @@ ImageData readBitMap(char *filename)
 
   /*open as binary file*/
   filePtr = fopen(filename, "rb");
+
+  /*exception*/
   if (filePtr == NULL) {
     printf("file open failed!\n");
     return imageData; 
@@ -35,7 +35,6 @@ ImageData readBitMap(char *filename)
   * here is a problem
    * sizeof(fileHeader) should be 14 but turn out to be 16
    */
-  //fread(&fileHeader, sizeof(fileHeader), 1, filePtr);
   /* read file header*/
   fread(&identfy, 2, 1, filePtr);
   fread(&filesize, 4, 1, filePtr);
@@ -61,12 +60,13 @@ ImageData readBitMap(char *filename)
     return imageData;
   }
 
-  imageData.pixelHead = (Pixel*)malloc(infoHeader.dataSize);
+  /*collect important imformation*/
   imageData.datasize = infoHeader.dataSize;
   imageData.fileSize = fileHeader.fileSize;
   imageData.offset = fileHeader.dataOffset;
 
-  fseek(filePtr, fileHeader.dataOffset , SEEK_SET);
+  /*read image materix data*/
+  imageData.pixelHead = (Pixel*)malloc(infoHeader.dataSize);
   if(!imageData.pixelHead)
   {
     free(imageData.pixelHead);
@@ -74,7 +74,9 @@ ImageData readBitMap(char *filename)
     printf("memory alloc failed\n");
     return imageData;
   }
+  fseek(filePtr, fileHeader.dataOffset , SEEK_SET);
   fread(imageData.pixelHead, infoHeader.dataSize, 1,filePtr);
+
   fclose(filePtr);
   return imageData;
 
